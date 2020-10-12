@@ -233,3 +233,4 @@ tags
 # Persistent undo
 [._]*.un~
 
+/Part 1.pdf
