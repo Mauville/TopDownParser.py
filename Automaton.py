@@ -1,5 +1,4 @@
 import string
-from pprint import pprint
 
 
 class State:
@@ -92,6 +91,7 @@ class Automaton:
 
 
 def automaton_factory(filename):
+    """Create an Automaton from a file"""
     file = open(filename, "r")
     lines = file.read().splitlines()
     read_states = lines.pop(0).split(',')
@@ -99,6 +99,7 @@ def automaton_factory(filename):
     initial_state = lines.pop(0)
     final_states = lines.pop(0).split(",")
     states = []
+    # Create State array from text states
     for state_name in read_states:
         temp = State(state_name)
         if state_name in final_states:
@@ -107,6 +108,7 @@ def automaton_factory(filename):
             temp.setInitial()
         states.append(temp)
 
+    # Create transitions in states from text transitions
     for transition in lines:
         raw = transition.split(",")
         instate = raw[0]

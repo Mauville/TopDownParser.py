@@ -1,12 +1,14 @@
-import click
 import pip
 
 from Automaton import automaton_factory
 
 try:
     __import__("click")
+    import click
 except ImportError:
     pip.main(['install', "click"])
+    print("Please run me again!")
+    exit()
 
 
 @click.command()
