@@ -1,4 +1,7 @@
 import string
+import requests
+from PIL import Image
+from io import BytesIO
 
 
 class State:
@@ -17,6 +20,10 @@ class State:
 
     def setFinal(self):
         self.isFinal = True
+
+    def process(self, char: str):
+        """ Return State from evaluating a char from this State """
+        return self.links.get(char)
 
     def __eq__(self, other):
         # don't attempt to compare against unrelated types
@@ -38,6 +45,45 @@ class Automaton:
 
     def __str__(self):
         return str(self.str_states)
+
+    def state_decorator(self, state1: str, state2: str, character: str):
+        """Decorates States for DOT notation """
+        return state1 + "->" + state2 + '[label = "' + character + '"];'
+
+    def display(self):
+        """ Display an automaton using GraphViz"""
+
+        #  digraph {
+        #  q0 -> q1 [label ="a"];
+        #  q0 -> q2 [label ="b"];
+        # }
+
+        # Create digraph in DOT notation
+        dot = 'digraph { rankdir="LR";'
+        # add final states
+        dot += "node [shape = doublecircle]; "
+        for fstate in self.final_states:
+            dot += fstate + " "
+        dot += ";"
+        dot += "node [shape = circle];"
+        # add initial state
+        dot += 'init [label="", shape=point]'
+        dot += 'init -> ' + self.initial_state + ' [style="solid"]'
+
+        # Add transitions
+        for state in self.states:
+            state1 = state.name
+            for letter in self.alphabet:
+                state2 = state.links.get(letter)
+                if state2:
+                    dot += self.state_decorator(state1, state2.name, letter)
+
+        dot += "}"
+        # Get & show graph using graphviz
+        url = "https://quickchart.io/graphviz?format=png&width=1700&height=2250&graph="
+        response = requests.get(url + dot)
+        img = Image.open(BytesIO(response.content))
+        img.show()
 
     def update_strings(self):
         """ Updates all the string values with graph values. Usually after minimization."""
@@ -72,7 +118,7 @@ class Automaton:
             new_state_ids = list(string.ascii_lowercase)
             for duplicate_state in duplicate_states:
                 # Rename all states matches q0 to qA
-                new_state = "q" + new_state_ids.pop()
+                new_state = "q" + new_state_ids.pop(0)
                 for this_states in self.states:
                     if this_states.links == duplicate_state:
                         # BUG If more than 24 reduction states, will break.
@@ -89,9 +135,35 @@ class Automaton:
 
         return self
 
+    def validate(self, string_eval: str):
+        """Check if a string is valid"""
+        print("\t Validating string: " + string_eval)
+        current_state = 0
+        for state in self.states:
+            if state.name == self.initial_state:
+                current_state = state
+
+        print("\t Starting from state: " + current_state.name)
+
+        for i, letter in enumerate(string_eval):
+            print("\t Processing letter: " + letter)
+            outcome = current_state.process(letter)
+            if not outcome:
+                print("\t Fell to Sink State. String is not valid. ")
+                return
+            else:
+                print("\t Moved from state " + current_state.name + " to state " + outcome.name)
+                current_state = outcome
+
+        if current_state.isFinal:
+            print("\n\t String is valid.")
+        else:
+            print("\n\t Resulting state is not final. String is invalid")
+
 
 def automaton_factory(filename):
     """Create an Automaton from a file"""
+
     file = open(filename, "r")
     lines = file.read().splitlines()
     read_states = lines.pop(0).split(',')
