@@ -1,0 +1,43 @@
+﻿= DFA.py
+David Villanueva San Juan & Oscar Vargas Pérez
+:icons: font
+:experimental:
+:source-highlighter: highlightjs
+:highlightjs-theme:  foundation
+:stylesheet: ./ADOC.css
+:toc: left
+:toclevels: 4
+:toc-title: Index
+:sectnums:
+:sectanchors:
+:imagesdir: imagedir/
+
+Hola!
+
+Hicimos nuestro siguiendo los lineamientos de POSIX. Lo puedes correr desde terminal como harías con cualquier utilidad de Linux.
+
+
+  Usage: Main.py [OPTIONS]
+    Display, Test and Minimize DFA's. By Team 6
+  Options:
+    --file TEXT                 A test file that contains an automaton scheme.  [required]
+    --string TEXT               A string to validate.
+    --minimize / --no-minimize  Minimize the automaton. [Default=True]
+    --visualize / --no-visualize  Visualize the automaton. [Default=True]
+    --help                      Show this message and exit.
+
+
+.Define un archivo de entrada
+[source,bash]
+python .\Main.py --file .\test2.txt
+
+.Valida un string
+[source,bash]
+python .\Main.py --file .\test2.txt --string aabaab
+
+.Evita la minimización de un archivo
+[source,bash]
+python .\Main.py --file .\test2.txt --no-minimize
+
+
+NOTE: El programa usa las librerías `requests` `pillow` y `click` para funcionar de manera adecuada. En pruebas, el programa los instala automáticamente si no están instaladas. Si el programa no se ejecuta correctamente, probablemente sea un problema con las dependencias.
