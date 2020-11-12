@@ -1,4 +1,4 @@
-﻿= DFA.py
+﻿= TopDown.py
 David Villanueva San Juan & Oscar Vargas Pérez
 :icons: font
 :experimental:
@@ -12,10 +12,9 @@ David Villanueva San Juan & Oscar Vargas Pérez
 :sectanchors:
 :imagesdir: imagedir/
 
-Hola!
+Hey there!
 
-Hicimos nuestro siguiendo los lineamientos de POSIX. Lo puedes correr desde terminal como harías con cualquier utilidad de Linux.
-
+We used POSIX compliant utilities. Run as you did before
 
   Usage: Main.py [OPTIONS]
     Display, Test and Minimize DFA's. By Team 6
